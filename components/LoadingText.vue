@@ -96,17 +96,14 @@ g path {
 @keyframes wiggleWiggle {
   20%,
   100% {
-    transform: translate(
-      0,
-      8px
-    ); /* stay on the baseline for most of the animation duration */
+    transform: translate(0, 8px);
   }
 
   0% {
-    transform: translate(0, 0px); /* hop up */
+    transform: translate(0, 0px);
   }
   10% {
-    transform: translate(0, 8px); /* return to baseline */
+    transform: translate(0, 8px);
   }
 }
 path {

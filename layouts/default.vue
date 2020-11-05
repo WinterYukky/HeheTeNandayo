@@ -1,14 +1,6 @@
 <template>
   <v-app dark>
-    <v-app-bar fixed app
-      ><v-tooltip bottom>
-        <template #activator="{ on }">
-          <v-icon left v-on="on">{{
-            pushOK ? 'mdi-bell' : 'mdi-bell-off'
-          }}</v-icon></template
-        ><template v-if="pushOK">通知が許可されています</template>
-        <template v-else>通知が許可されていません</template></v-tooltip
-      >
+    <v-app-bar fixed app>
       <v-tooltip bottom
         ><template #activator="{ on }"
           ><v-icon right v-on="on">{{
@@ -22,7 +14,7 @@
         <template #activator="{ on }">
           <v-btn icon v-on="on"><v-icon>mdi-help</v-icon></v-btn>
         </template>
-        <help-stepper></help-stepper
+        <help-card></help-card
       ></v-dialog>
       <v-tooltip bottom
         ><template #activator="{ on }"
@@ -58,17 +50,15 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { pushOK } from '@/functions/usePush'
 import { microphoneOK } from '@/functions/useMicrophone'
 import { heheCount } from '@/functions/useHeheCount'
-import HelpStepper from '@/components/HelpStepper.vue'
+import HelpCard from '@/components/HelpCard.vue'
 export default defineComponent({
   components: {
-    HelpStepper,
+    HelpCard,
   },
   setup() {
     return {
-      pushOK,
       microphoneOK,
       tweet: () => {
         if (process.server) return

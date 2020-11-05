@@ -8,6 +8,7 @@
       </template>
       <smile-paimon v-else></smile-paimon>
       <loading-text v-if="loading"></loading-text>
+      <please-say-text v-if="pleaseSayHehe"></please-say-text>
     </v-col>
   </v-row>
 </template>
@@ -19,15 +20,14 @@ import {
   onMounted,
   ref,
 } from '@nuxtjs/composition-api'
-import { pushOK } from '@/functions/usePush'
-import { microphoneOK } from '@/functions/useMicrophone'
+import { useNow } from '@vueuse/core'
 import { usePaimonAI } from '@/functions/usePaimonAI'
 import { heheCount } from '@/functions/useHeheCount'
-import push from 'push.js'
 import SleepPaimon from '@/components/SleepPaimon.vue'
 import AngerPaimon from '@/components/AngerPaimon.vue'
 import SmilePaimon from '@/components/SmilePaimon.vue'
 import LoadingText from '@/components/LoadingText.vue'
+import PleaseSayText from '@/components/PleaseSayText.vue'
 import HeheTeNandayo from '@/components/HeheTeNandayo.vue'
 
 export default defineComponent({
@@ -37,41 +37,34 @@ export default defineComponent({
     SmilePaimon,
     LoadingText,
     HeheTeNandayo,
+    PleaseSayText,
   },
   setup() {
     const modelLoad = ref(false)
     const recentHeheCount = ref(0)
-    const pointOut = async () => {
-      if (process.server) return
-      recentHeheCount.value++
-      heheCount.value++
-      const timeout = 4000
-      setTimeout(() => recentHeheCount.value--, timeout)
-      if (recentHeheCount.value >= 2) return
-      await push.create('パイモン', {
-        body: 'えへってなんだよ！',
-        icon: 'Anger.png',
-        timeout,
-        vibrate: true,
-      })
-    }
+    const now = ref(process.browser ? useNow() : 0)
+    const lastHehe = ref(now.value)
     onMounted(async () => {
       if (process.server) return
-      await Notification.requestPermission()
       const paimonAI = await usePaimonAI()
       modelLoad.value = true
+      lastHehe.value = now.value
       const wordLabels = paimonAI.wordLabels()
       paimonAI.listen(
-        async (result) => {
-          await wordLabels.forEach(async (label, index) => {
+        (result) => {
+          wordLabels.forEach((label, index) => {
             if (
-              !pushOK.value ||
               label === 'バックグラウンド ノイズ' ||
               result.scores[index] < 0.8
             )
               return
-            await pointOut()
+            recentHeheCount.value++
+            heheCount.value++
+            lastHehe.value = now.value
+            const timeout = 4000
+            setTimeout(() => recentHeheCount.value--, timeout)
           })
+          return new Promise(() => {})
         },
         {
           includeSpectrogram: true,
@@ -82,13 +75,14 @@ export default defineComponent({
       )
     })
     const loading = computed(() => !modelLoad.value)
+
     return {
       loading,
-      pimonIsSleep: computed(
-        () => loading.value || !pushOK.value || !microphoneOK.value
-      ),
+      pimonIsSleep: computed(() => loading.value),
       paimonIsAnger: computed(() => recentHeheCount.value >= 1),
-      pointOut,
+      pleaseSayHehe: computed(
+        () => !loading.value && now.value - lastHehe.value > 5000
+      ),
     }
   },
 })
