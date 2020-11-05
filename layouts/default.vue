@@ -49,7 +49,7 @@
         <v-icon left>mdi-twitter</v-icon>
         @WinterYukke
       </v-chip>
-      <v-btn icon>
+      <v-btn icon href="https://github.com/WinterYukky/HeheTeNandayo">
         <v-icon>mdi-github</v-icon>
       </v-btn>
     </v-footer>
