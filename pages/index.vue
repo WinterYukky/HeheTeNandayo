@@ -40,17 +40,16 @@ export default defineComponent({
     PleaseSayText,
   },
   setup() {
-    const modelLoad = ref(false)
+    const listenStart = ref(false)
     const recentHeheCount = ref(0)
     const now = ref(process.browser ? useNow() : 0)
     const lastHehe = ref(now.value)
     onMounted(async () => {
       if (process.server) return
       const paimonAI = await usePaimonAI()
-      modelLoad.value = true
       lastHehe.value = now.value
       const wordLabels = paimonAI.wordLabels()
-      paimonAI.listen(
+      await paimonAI.listen(
         (result) => {
           wordLabels.forEach((label, index) => {
             if (
@@ -73,8 +72,9 @@ export default defineComponent({
           overlapFactor: 0.5,
         }
       )
+      listenStart.value = true
     })
-    const loading = computed(() => !modelLoad.value)
+    const loading = computed(() => !listenStart.value)
 
     return {
       loading,
