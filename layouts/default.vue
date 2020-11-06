@@ -9,17 +9,9 @@
         </template>
         <help-card></help-card
       ></v-dialog>
-      <v-tooltip bottom
-        ><template #activator="{ on }"
-          ><v-btn
-            icon
-            v-on="on"
-            @click="$vuetify.theme.dark = !$vuetify.theme.dark"
-          >
-            <v-icon>mdi-theme-light-dark</v-icon>
-          </v-btn></template
-        >ライトモードの切替</v-tooltip
-      >
+      <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+        <v-icon>mdi-theme-light-dark</v-icon>
+      </v-btn>
       <v-btn icon @click="tweet"><v-icon>mdi-twitter</v-icon></v-btn>
     </v-app-bar>
     <v-main>
