@@ -16,6 +16,12 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-icon
+            ><v-icon disabled>mdi-microphone</v-icon></v-list-item-icon
+          >
+          <v-list-item-content>マイクの確認が出来ません</v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon
             ><v-icon disabled>mdi-microphone-settings</v-icon></v-list-item-icon
           >
           <v-list-item-content>マイクの許可待ち状態です</v-list-item-content>

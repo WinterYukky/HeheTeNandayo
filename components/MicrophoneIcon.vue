@@ -23,12 +23,12 @@ export default defineComponent({
       microphoneOK,
       icon: computed(() => {
         switch (microphoneAccess.value) {
-          case 'granted':
-            return 'mdi-microphone'
+          case 'denied':
+            return 'mdi-microphone-off'
           case 'prompt':
             return 'mdi-microphone-settings'
           default:
-            return 'mdi-microphone-off'
+            return 'mdi-microphone'
         }
       }),
       text: computed(() => {
