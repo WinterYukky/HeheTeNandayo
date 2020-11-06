@@ -6,11 +6,23 @@
     <v-divider class="ma-4"></v-divider>
     <v-card-title>動かない時</v-card-title>
     <v-card-text>
-      マイクか通知が許可されていない可能性があります。左上のアイコンを確認してください。
+      マイクを利用出来ないブラウザ、もしくはマイクが許可されていない可能性があります。左上のアイコンを確認してください。
       <v-list>
         <v-list-item>
           <v-list-item-icon
-            ><v-icon>mdi-microphone-off</v-icon></v-list-item-icon
+            ><v-icon color="red">mdi-microphone</v-icon></v-list-item-icon
+          >
+          <v-list-item-content>マイクが許可されています</v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon
+            ><v-icon disabled>mdi-microphone-settings</v-icon></v-list-item-icon
+          >
+          <v-list-item-content>マイクの許可待ち状態です</v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-icon
+            ><v-icon disabled>mdi-microphone-off</v-icon></v-list-item-icon
           >
           <v-list-item-content>マイクが許可されていません</v-list-item-content>
         </v-list-item>
@@ -20,13 +32,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   setup() {
-    return {
-      step: ref(1),
-    }
+    return {}
   },
 })
 </script>

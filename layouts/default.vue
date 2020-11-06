@@ -1,14 +1,7 @@
 <template>
   <v-app dark>
     <v-app-bar fixed app>
-      <v-tooltip bottom
-        ><template #activator="{ on }"
-          ><v-icon right v-on="on">{{
-            microphoneOK ? 'mdi-microphone' : 'mdi-microphone-off'
-          }}</v-icon></template
-        ><template v-if="microphoneOK">マイクが許可されています</template>
-        <template v-else>マイクが許可されていません</template></v-tooltip
-      >
+      <microphone-icon></microphone-icon>
       <v-spacer />
       <v-dialog max-width="600">
         <template #activator="{ on }">
@@ -50,16 +43,16 @@
 
 <script lang="ts">
 import { defineComponent } from '@nuxtjs/composition-api'
-import { microphoneOK } from '@/functions/useMicrophone'
 import { heheCount } from '@/functions/useHeheCount'
+import MicrophoneIcon from '@/components/MicrophoneIcon.vue'
 import HelpCard from '@/components/HelpCard.vue'
 export default defineComponent({
   components: {
+    MicrophoneIcon,
     HelpCard,
   },
   setup() {
     return {
-      microphoneOK,
       tweet: () => {
         if (process.server) return
         window.open(
