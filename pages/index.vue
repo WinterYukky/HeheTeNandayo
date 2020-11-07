@@ -39,40 +39,47 @@ export default defineComponent({
     HeheTeNandayo,
     PleaseSayText,
   },
-  setup() {
+  setup(_, context) {
     const listenStart = ref(false)
     const recentHeheCount = ref(0)
     const now = ref(process.browser ? useNow() : 0)
     const lastHehe = ref(now.value)
     onMounted(async () => {
       if (process.server) return
-      const paimonAI = await usePaimonAI()
-      lastHehe.value = now.value
-      const wordLabels = paimonAI.wordLabels()
-      await paimonAI.listen(
-        (result) => {
-          wordLabels.forEach((label, index) => {
-            if (
-              label === 'バックグラウンド ノイズ' ||
-              result.scores[index] < 0.8
-            )
-              return
-            recentHeheCount.value++
-            heheCount.value++
-            lastHehe.value = now.value
-            const timeout = 4000
-            setTimeout(() => recentHeheCount.value--, timeout)
-          })
-          return new Promise(() => {})
-        },
-        {
-          includeSpectrogram: true,
-          probabilityThreshold: 0.75,
-          invokeCallbackOnNoiseAndUnknown: true,
-          overlapFactor: 0.5,
-        }
-      )
-      listenStart.value = true
+      try {
+        const paimonAI = await usePaimonAI()
+        lastHehe.value = now.value
+        const wordLabels = paimonAI.wordLabels()
+        await paimonAI.listen(
+          (result) => {
+            wordLabels.forEach((label, index) => {
+              if (
+                label === 'バックグラウンド ノイズ' ||
+                result.scores[index] < 0.8
+              )
+                return
+              recentHeheCount.value++
+              heheCount.value++
+              lastHehe.value = now.value
+              const timeout = 4000
+              setTimeout(() => recentHeheCount.value--, timeout)
+            })
+            return new Promise(() => {})
+          },
+          {
+            includeSpectrogram: true,
+            probabilityThreshold: 0.75,
+            invokeCallbackOnNoiseAndUnknown: true,
+            overlapFactor: 0.5,
+          }
+        )
+        listenStart.value = true
+      } catch (error) {
+        context.root.$nuxt.error({
+          statusCode: 500,
+          message: '起動中にエラーが発生しました。',
+        })
+      }
     })
     const loading = computed(() => !listenStart.value)
 
