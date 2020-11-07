@@ -41,14 +41,12 @@ export default defineComponent({
   },
   setup(_, context) {
     const listenStart = ref(false)
-    const recentHeheCount = ref(0)
     const now = ref(process.browser ? useNow() : 0)
-    const lastHehe = ref(now.value)
+    const lastHeheTime = ref(0)
     onMounted(async () => {
       if (process.server) return
       try {
         const paimonAI = await usePaimonAI()
-        lastHehe.value = now.value
         const wordLabels = paimonAI.wordLabels()
         await paimonAI.listen(
           (result) => {
@@ -58,11 +56,9 @@ export default defineComponent({
                 result.scores[index] < 0.8
               )
                 return
-              recentHeheCount.value++
               heheCount.value++
-              lastHehe.value = now.value
-              const timeout = 4000
-              setTimeout(() => recentHeheCount.value--, timeout)
+              if (now.value - lastHeheTime.value < 2000) return
+              lastHeheTime.value = now.value
             })
             return new Promise(() => {})
           },
@@ -86,9 +82,9 @@ export default defineComponent({
     return {
       loading,
       pimonIsSleep: computed(() => loading.value),
-      paimonIsAnger: computed(() => recentHeheCount.value >= 1),
+      paimonIsAnger: computed(() => now.value - lastHeheTime.value < 2000),
       pleaseSayHehe: computed(
-        () => !loading.value && now.value - lastHehe.value > 5000
+        () => !loading.value && now.value - lastHeheTime.value > 5000
       ),
     }
   },
